@@ -9,6 +9,7 @@ from aurora.features import build_feature_set
 from aurora.portfolio import build_target_weights
 from aurora.regime import __doc__ as regime_doc
 from aurora.regime import classify_regimes
+from aurora.visualization import plot_equity_curves
 
 
 def test_basic_imports_and_settings() -> None:
@@ -24,5 +25,6 @@ def test_basic_imports_and_settings() -> None:
     assert callable(build_feature_set)
     assert callable(classify_regimes)
     assert callable(build_target_weights)
+    assert callable(plot_equity_curves)
     assert features_doc is not None
     assert regime_doc is not None

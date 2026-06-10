@@ -75,6 +75,27 @@ make run-smoke
 make app
 ```
 
+## Visualizacoes
+
+As funcoes em `src/aurora/visualization/charts.py` retornam objetos Plotly independentes de Streamlit, permitindo uso em notebooks, relatorios e scripts.
+
+Exemplo:
+
+```python
+from aurora.visualization import plot_equity_curves, save_figure
+
+figure = plot_equity_curves(strategy_equity_curve, benchmark_equity_curves)
+save_figure(figure, "reports/figures/equity_curve.html")
+```
+
+Outro exemplo:
+
+```python
+from aurora.visualization import plot_performance_table
+
+metrics_figure = plot_performance_table(performance_summary)
+```
+
 ## Dados
 
 As pastas em `data/` existem apenas como estrutura de trabalho. Dados reais, bases intermediarias, caches e artefatos sensiveis nao devem ser versionados. Os diretorios mantem apenas arquivos `.gitkeep` para preservar a arvore no Git.
