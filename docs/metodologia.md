@@ -60,3 +60,20 @@ Ordem de decisao:
    Caso residual, quando nenhum dos gatilhos anteriores estiver ativo.
 
 Os sinais usados na classificacao sao armazenados junto com o regime e a explicacao textual, o que facilita auditoria e revisao do racional de cada decisao.
+
+## Politica De Alocacao Por Regime
+
+As alocacoes do Aurora sao definidas a priori, antes de qualquer backtest, para mitigar overfitting e manter justificativa economica clara.
+
+Diretriz inicial:
+
+- `TENDENCIA_POSITIVA`: maior peso em `BOVA11.SA` e `IVVB11.SA`, mantendo pequena camada defensiva.
+- `ESTRESSE`: maior peso em `CDI`, `IMAB11.SA` e `USDBRL=X`, reduzindo risco direcional.
+- `LATERALIZACAO`: pesos equilibrados entre os blocos de risco e defesa.
+- `RECUPERACAO`: reentrada gradual em risco, sem abandonar protecao.
+
+Todas as politicas sao long-only e validadas para:
+
+- nenhum peso negativo;
+- soma de pesos igual a 100%;
+- cobertura completa do universo inicial de ativos.
