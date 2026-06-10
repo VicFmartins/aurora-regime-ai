@@ -14,7 +14,7 @@ Fonte principal de parametros:
 
 ## Features Quantitativas
 
-As features do Aurora transformam a serie de precos em sinais interpretableis para classificacao de regime. O pipeline preserva `NaN` no inicio das janelas e aplica `shift(1)` apenas ao final da montagem do conjunto de decisao, evitando look-ahead bias no backtest.
+As features do Aurora transformam a serie de precos em sinais interpretaveis para classificacao de regime. O pipeline preserva `NaN` no inicio das janelas e aplica `shift(1)` apenas ao final da montagem do conjunto de decisao, evitando look-ahead bias no backtest.
 
 ### Momentum
 

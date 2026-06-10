@@ -117,7 +117,7 @@ Uma versao profissional exigiria, no minimo:
 
 Sim, desde que a conclusao seja honesta. Em pesquisa quantitativa, arquitetura, controle de vieses e clareza metodologica sao entregas relevantes mesmo quando o desempenho final nao confirma a hipotese. Um resultado fraco ainda pode:
 
-- invalidar uma tese de forma útil;
+- invalidar uma tese de forma util;
 - revelar onde a classificacao falha;
 - orientar a proxima iteracao do modelo;
 - fortalecer a credibilidade do processo.

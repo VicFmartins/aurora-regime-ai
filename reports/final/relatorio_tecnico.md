@@ -225,7 +225,7 @@ Na pratica, isso significa que o sistema nao usa o proprio fechamento da data de
 
 ## 9. Benchmarks
 
-O projeto compara a estrategia com referencias simples, interpretableis e reproduziveis:
+O projeto compara a estrategia com referencias simples, interpretaveis e reproduziveis:
 
 1. `Buy and hold` de `BOVA11.SA`
 2. `CDI` ou caixa defensivo
@@ -290,7 +290,7 @@ Esta secao deve registrar apenas observacoes efetivamente produzidas pelo pipeli
 
 ### 11.4 Regra de integridade
 
-Nenhum resultado deve ser descrito como evidência de superioridade estrutural sem:
+Nenhum resultado deve ser descrito como evidencia de superioridade estrutural sem:
 
 - comparacao consistente com benchmarks;
 - avaliacao fora do mero retorno bruto;
