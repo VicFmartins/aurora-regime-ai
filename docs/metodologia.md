@@ -92,4 +92,20 @@ Esses benchmarks foram escolhidos porque cobrem quatro perguntas complementares:
 - a estrategia supera o risco direcional puro?
 - supera a opcao defensiva de ficar em caixa?
 - agrega valor contra uma alocacao estatica razoavel?
-- agrega valor contra uma diversificacao ingênua e transparente?
+- agrega valor contra uma diversificacao ingenua e transparente?
+
+## Metricas De Performance
+
+O modulo de analise resume estrategia e benchmarks com metricas padronizadas, sempre na mesma janela temporal usada no backtest.
+
+- retorno acumulado: crescimento total no periodo.
+- retorno anualizado: taxa geometrica equivalente anual.
+- volatilidade anualizada: dispersao dos retornos escalada para base anual.
+- Sharpe ratio: retorno excedente por unidade de risco, com taxa livre de risco opcional.
+- maximo drawdown: pior perda relativa a partir do pico anterior.
+- Calmar ratio: retorno anualizado dividido pelo drawdown maximo absoluto.
+- hit rate: proporcao de periodos com retorno positivo.
+- melhor mes: maior retorno mensal observado.
+- pior mes: menor retorno mensal observado.
+- numero de rebalanceamentos: quantidade de trocas de carteira registradas.
+- turnover medio: media do giro de carteira quando o log de rebalanceamento estiver disponivel.

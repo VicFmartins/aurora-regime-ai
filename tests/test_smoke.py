@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from aurora import ProjectConfig, load_config
+from aurora.analysis import summarize_performance
 from aurora.backtest import build_benchmark_suite, run_backtest
 from aurora.data import get_price_data
 from aurora.features import __doc__ as features_doc
@@ -16,6 +17,7 @@ def test_basic_imports_and_settings() -> None:
     assert isinstance(config, ProjectConfig)
     assert config.frequency == "monthly"
     assert config.rebalance_frequency == "M"
+    assert callable(summarize_performance)
     assert callable(run_backtest)
     assert callable(build_benchmark_suite)
     assert callable(get_price_data)
