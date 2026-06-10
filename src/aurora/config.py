@@ -44,6 +44,8 @@ class ProjectConfig:
     positive_momentum_threshold: float = 0.0
     rebalance_frequency: str = "M"
     transaction_cost_bps: int = 0
+    min_observations_per_asset: int = 252
+    max_null_ratio_per_asset: float = 0.10
     raw_data_dir: Path = Path("data/raw")
     processed_data_dir: Path = Path("data/processed")
     cache_dir: Path = Path("data/cache")

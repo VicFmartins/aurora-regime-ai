@@ -13,7 +13,10 @@ authors = [
   { name = "VicFmartins" },
 ]
 dependencies = [
+  "pandas>=2.2,<3.0",
+  "pyarrow>=17.0,<21.0",
   "streamlit>=1.45,<2.0",
+  "yfinance>=0.2.54,<0.3.0",
 ]
 
 [project.optional-dependencies]

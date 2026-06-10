@@ -43,6 +43,8 @@ def test_weights_and_parameters_are_coherent() -> None:
     assert config.high_volatility_threshold > 0.0
     assert config.positive_momentum_threshold == 0.0
     assert config.transaction_cost_bps >= 0
+    assert config.min_observations_per_asset > 0
+    assert 0.0 <= config.max_null_ratio_per_asset <= 1.0
     assert config.rebalance_frequency == "M"
     assert date.fromisoformat(config.start_date) < date.fromisoformat(config.end_date)
 
