@@ -12,4 +12,34 @@ Fonte principal de parametros:
 
 - `src/aurora/config.py` centraliza o universo inicial de ativos, as janelas de calculo, os thresholds de regime, a frequencia padrao e os caminhos relativos usados pelo projeto.
 
-Nesta fase, o projeto esta apenas estruturado. Nenhuma regra quantitativa foi implementada ainda.
+## Features Quantitativas
+
+As features do Aurora transformam a serie de precos em sinais interpretableis para classificacao de regime. O pipeline preserva `NaN` no inicio das janelas e aplica `shift(1)` apenas ao final da montagem do conjunto de decisao, evitando look-ahead bias no backtest.
+
+### Momentum
+
+Momentum mede o retorno acumulado em janelas como 63, 126 e 252 periodos. Ele ajuda a diferenciar contextos de tendencia positiva, perda de forca ou recuperacao apos quedas.
+
+### Volatilidade
+
+Volatilidade e calculada sobre retornos em janela movel e pode ser anualizada. Ela ajuda a identificar transicoes para ambientes de estresse, incerteza elevada e mudancas bruscas de comportamento.
+
+### Drawdown
+
+Drawdown mede a distancia do preco atual para o pico recente da janela. Esse indicador ajuda a detectar deterioracao persistente, estresse e fragilidade estrutural mesmo quando a volatilidade isolada nao captura toda a perda acumulada.
+
+### Z-Score
+
+O z-score padroniza retornos em relacao a sua media e dispersao recentes. Isso ajuda a encontrar desvios anormais, excessos de movimento e sinais de compressao ou esticamento que podem marcar mudanca de regime.
+
+### Correlacao
+
+Correlacoes moveis entre ativos mostram quando diferentes blocos de mercado passam a andar mais juntos ou se desacoplam. Em regimes de estresse, correlacoes tendem a subir, reduzindo diversificacao efetiva.
+
+## Uso Metodologico
+
+- momentum ajuda a separar tendencia e recuperacao;
+- volatilidade ajuda a detectar estresse e instabilidade;
+- drawdown ajuda a capturar perdas acumuladas;
+- z-score ajuda a medir anomalias de curto e medio prazo;
+- correlacao ajuda a avaliar contagio e quebra de diversificacao.

@@ -3,6 +3,7 @@ from __future__ import annotations
 from aurora import ProjectConfig, load_config
 from aurora.data import get_price_data
 from aurora.features import __doc__ as features_doc
+from aurora.features import build_feature_set
 from aurora.regime import __doc__ as regime_doc
 
 
@@ -13,5 +14,6 @@ def test_basic_imports_and_settings() -> None:
     assert config.frequency == "monthly"
     assert config.rebalance_frequency == "M"
     assert callable(get_price_data)
+    assert callable(build_feature_set)
     assert features_doc is not None
     assert regime_doc is not None
