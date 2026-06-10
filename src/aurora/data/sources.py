@@ -1,4 +1,4 @@
-"""External and manual data sources for historical prices."""
+"""External data sources for historical prices."""
 
 from __future__ import annotations
 
@@ -10,7 +10,6 @@ import yfinance as yf
 
 from aurora.config import ProjectConfig
 
-MANUAL_PRICE_FILE = "prices.csv"
 PRICE_CACHE_FILE = "prices.parquet"
 YFINANCE_UNSUPPORTED_TICKERS = frozenset({"CDI"})
 
@@ -43,26 +42,6 @@ def fetch_yfinance_prices(config: ProjectConfig) -> pd.DataFrame:
     return _select_price_field(history=history, tickers=tickers)
 
 
-def load_manual_price_data(config: ProjectConfig) -> pd.DataFrame:
-    """Load optional manual price data from ``data/raw/prices.csv``."""
-    manual_path = Path(config.raw_data_dir) / MANUAL_PRICE_FILE
-    if not manual_path.exists():
-        return pd.DataFrame()
-
-    try:
-        manual_data = pd.read_csv(manual_path, index_col=0, parse_dates=True)
-    except Exception as exc:
-        raise RuntimeError(
-            "Nao foi possivel ler o arquivo manual de precos em "
-            f"'{manual_path.as_posix()}'. Verifique o CSV e tente novamente."
-        ) from exc
-
-    manual_data.index = pd.to_datetime(manual_data.index)
-    manual_data = manual_data.sort_index()
-    manual_data.index.name = "Date"
-    return manual_data
-
-
 def merge_price_sources(
     config: ProjectConfig,
     downloaded_prices: pd.DataFrame,
@@ -91,12 +70,12 @@ def get_cache_path(config: ProjectConfig) -> Path:
 
 
 def _build_download_error_message(config: ProjectConfig) -> str:
-    manual_path = Path(config.raw_data_dir) / MANUAL_PRICE_FILE
+    manual_path = Path(config.raw_data_dir) / "prices.csv"
     return (
         "Falha ao baixar os precos historicos via yfinance. "
         "Tente novamente mais tarde ou forneca um CSV manual em "
-        f"'{manual_path.as_posix()}' com a primeira coluna de data e as demais "
-        "colunas nomeadas pelos tickers configurados."
+        f"'{manual_path.as_posix()}'. Sao aceitos os formatos wide "
+        "('date' + colunas por ticker) e long ('date', 'ticker', 'price')."
     )
 
 

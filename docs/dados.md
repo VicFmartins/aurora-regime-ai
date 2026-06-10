@@ -35,10 +35,24 @@ Os dados carregados sao validados para garantir:
 
 ## Substituicao Manual Por CSV
 
-Quando o download falhar ou um ticker nao estiver disponivel, o projeto orienta o uso de `data/raw/prices.csv`. O formato esperado e:
+Quando o download falhar ou um ticker nao estiver disponivel, o projeto orienta o uso de `data/raw/prices.csv`. O loader detecta automaticamente dois formatos:
 
-- primeira coluna com datas;
-- demais colunas com os tickers configurados;
-- valores numericos de preco por data.
+Formato wide:
+
+- colunas `date,BOVA11.SA,IVVB11.SA,IMAB11.SA,USDBRL=X,CDI`;
+- uma linha por data;
+- uma coluna por ticker.
+
+Formato long:
+
+- colunas `date,ticker,price`;
+- multiplas linhas por data;
+- uma linha por combinacao data-ativo.
+
+Em ambos os casos, o loader converte o arquivo para um `DataFrame` wide com `DatetimeIndex`, valida estrutura e qualidade minima e integra os dados ao fluxo principal.
+
+## Exemplo Ficticio
+
+O arquivo `data/raw/example_prices.csv` existe apenas como exemplo artificial de preenchimento. Os valores sao ficticios, pequenos e exclusivamente demonstrativos. Eles nao representam precos reais de mercado e nao devem ser usados para analise, pesquisa ou decisao de investimento.
 
 Essa rota manual permite substituir parcial ou totalmente o download via `yfinance` no futuro, sem alterar a interface principal da camada de dados.

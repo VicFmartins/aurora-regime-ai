@@ -46,6 +46,7 @@ reports/final/*
 # Keep data directories, but never commit real datasets
 data/raw/*
 !data/raw/.gitkeep
+!data/raw/example_prices.csv
 data/processed/*
 !data/processed/.gitkeep
 data/cache/*
