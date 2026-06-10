@@ -42,6 +42,11 @@ def test_weights_and_parameters_are_coherent() -> None:
     assert config.stress_drawdown_threshold < 0.0
     assert config.high_volatility_threshold > 0.0
     assert config.positive_momentum_threshold == 0.0
+    assert config.recovery_zscore_improvement_threshold == 0.0
+    assert config.regime_target_asset in config.assets
+    assert config.recovery_momentum_window in config.momentum_windows
+    assert config.trend_medium_momentum_window in config.momentum_windows
+    assert config.trend_long_momentum_window in config.momentum_windows
     assert config.transaction_cost_bps >= 0
     assert config.min_observations_per_asset > 0
     assert 0.0 <= config.max_null_ratio_per_asset <= 1.0

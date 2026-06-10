@@ -43,3 +43,20 @@ Correlacoes moveis entre ativos mostram quando diferentes blocos de mercado pass
 - drawdown ajuda a capturar perdas acumuladas;
 - z-score ajuda a medir anomalias de curto e medio prazo;
 - correlacao ajuda a avaliar contagio e quebra de diversificacao.
+
+## Arvore De Decisao Dos Regimes
+
+O classificador inicial do Aurora e propositalmente baseado em regras simples, explicaveis e parametrizadas em `config.py`. Os thresholds nao sao ajustados olhando o desempenho final do backtest; eles sao definidos ex ante para manter interpretabilidade metodologica.
+
+Ordem de decisao:
+
+1. `ESTRESSE`
+   Se `drawdown` estiver abaixo do limite de estresse ou se a volatilidade anualizada estiver acima do teto configurado.
+2. `TENDENCIA_POSITIVA`
+   Se `momentum_126 > 0`, `momentum_252 > 0` e a volatilidade permanecer controlada.
+3. `RECUPERACAO`
+   Se o `drawdown` ainda for negativo, mas `momentum_63 > 0` e o `z-score` estiver melhorando.
+4. `LATERALIZACAO`
+   Caso residual, quando nenhum dos gatilhos anteriores estiver ativo.
+
+Os sinais usados na classificacao sao armazenados junto com o regime e a explicacao textual, o que facilita auditoria e revisao do racional de cada decisao.

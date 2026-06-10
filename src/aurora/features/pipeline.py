@@ -53,6 +53,12 @@ def build_feature_set(
 
     zscore = compute_zscore(simple_returns, window=config.zscore_window)
     feature_frames.append(_rename_columns(zscore, prefix=f"zscore_{config.zscore_window}"))
+    feature_frames.append(
+        _rename_columns(
+            zscore.diff(),
+            prefix=f"zscore_delta_{config.zscore_window}",
+        )
+    )
 
     correlation_features = _build_correlation_features(
         returns=simple_returns,

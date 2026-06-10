@@ -42,6 +42,11 @@ class ProjectConfig:
     stress_drawdown_threshold: float = -0.15
     high_volatility_threshold: float = 0.30
     positive_momentum_threshold: float = 0.0
+    recovery_zscore_improvement_threshold: float = 0.0
+    regime_target_asset: str = "BOVA11.SA"
+    recovery_momentum_window: int = 63
+    trend_medium_momentum_window: int = 126
+    trend_long_momentum_window: int = 252
     rebalance_frequency: str = "M"
     transaction_cost_bps: int = 0
     min_observations_per_asset: int = 252

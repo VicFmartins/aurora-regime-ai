@@ -76,6 +76,7 @@ def test_build_feature_set_returns_clear_columns() -> None:
         "volatility_2__IMAB11.SA",
         "drawdown_2__USDBRL=X",
         "zscore_2__CDI",
+        "zscore_delta_2__BOVA11.SA",
         "correlation__BOVA11.SA__IVVB11.SA__2",
     }
     assert expected_columns.issubset(set(feature_set.columns))
