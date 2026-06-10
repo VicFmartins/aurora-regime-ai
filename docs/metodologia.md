@@ -77,3 +77,19 @@ Todas as politicas sao long-only e validadas para:
 - nenhum peso negativo;
 - soma de pesos igual a 100%;
 - cobertura completa do universo inicial de ativos.
+
+## Benchmarks De Comparacao
+
+O Aurora compara a estrategia com referencias simples, reproduziveis e economicamente interpretaveis na mesma janela temporal do backtest.
+
+- `Buy and hold` de `BOVA11.SA`: referencia direta de exposicao ao principal ativo de risco local.
+- `CDI`/caixa defensivo: referencia conservadora para avaliar se a estrategia compensa o risco assumido.
+- carteira estatica `60/40` diversificada: referencia intermediaria entre risco e defesa, sem adaptacao por regime.
+- `Equal weight`: referencia neutra de diversificacao simples entre os ativos disponiveis.
+
+Esses benchmarks foram escolhidos porque cobrem quatro perguntas complementares:
+
+- a estrategia supera o risco direcional puro?
+- supera a opcao defensiva de ficar em caixa?
+- agrega valor contra uma alocacao estatica razoavel?
+- agrega valor contra uma diversificacao ingênua e transparente?
