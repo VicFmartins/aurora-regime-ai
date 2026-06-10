@@ -7,6 +7,7 @@ from warnings import warn
 
 import pandas as pd
 import yfinance as yf
+from requests.exceptions import RequestException
 
 from aurora.config import ProjectConfig
 
@@ -33,7 +34,7 @@ def fetch_yfinance_prices(config: ProjectConfig) -> pd.DataFrame:
             group_by="column",
             threads=False,
         )
-    except Exception as exc:
+    except (AttributeError, KeyError, RequestException, TypeError, ValueError) as exc:
         raise RuntimeError(_build_download_error_message(config)) from exc
 
     if history.empty:

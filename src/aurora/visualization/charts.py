@@ -224,7 +224,7 @@ def save_figure(
     if output_path.suffix.lower() == ".png":
         try:
             figure.write_image(output_path)
-        except Exception as exc:
+        except (ImportError, OSError, ValueError) as exc:
             raise RuntimeError(
                 "Nao foi possivel exportar PNG. Instale o suporte de imagem do Plotly, "
                 "como kaleido, ou salve em HTML."

@@ -1,30 +1,146 @@
 # Aurora Regime AI
 
-Aurora Regime AI e um projeto de pesquisa quantitativa para alocacao adaptativa de portfolio com base em regimes de mercado. A proposta e combinar sinais como momentum, volatilidade, drawdown, z-score e correlacao para classificar o contexto de mercado antes de decidir exposicao, risco e distribuicao entre ativos.
+[![CI](https://github.com/VicFmartins/aurora-regime-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/VicFmartins/aurora-regime-ai/actions/workflows/ci.yml)
 
-## Hipotese
+Adaptive quantitative research project for portfolio allocation by market regime.
 
-A hipotese central do projeto e que a adaptacao de carteira por regime pode melhorar a relacao risco-retorno em comparacao com uma alocacao estatica. Em vez de assumir que o mercado segue uma unica dinamica, o Aurora busca reconhecer mudancas de contexto como:
+Aurora Regime AI was built to recognize market context, not to predict the future tick by tick. The core idea is to combine interpretable signals such as momentum, volatility, drawdown, z-score and correlation, classify the environment into explicit regimes, and map those regimes into predefined portfolio weights.
 
-- tendencia positiva;
-- estresse;
-- lateralizacao;
-- recuperacao.
+## Hypothesis
 
-Nesta etapa inicial, a arquitetura do projeto foi preparada para pesquisa, backtests, analise e visualizacao. A estrategia quantitativa ainda nao foi implementada.
+The central research hypothesis is that a regime-aware allocation process can improve risk-adjusted outcomes relative to static allocations, while remaining explainable and auditable.
+
+Instead of assuming a single market dynamic, Aurora evaluates whether the market is closer to:
+
+- `TENDENCIA_POSITIVA`
+- `ESTRESSE`
+- `LATERALIZACAO`
+- `RECUPERACAO`
+
+## Architecture
+
+The repository is organized as a professional research stack with separated layers for:
+
+- configuration and project parameters;
+- market data ingestion, validation and cache;
+- feature engineering;
+- rule-based regime classification;
+- regime-to-allocation mapping;
+- monthly backtest engine;
+- benchmark construction;
+- performance analysis;
+- Plotly visualizations;
+- Streamlit dashboard;
+- GenAI-assisted reporting prompts and technical documentation.
 
 ## Stack
 
 - Python 3.11+
-- `src/` layout para empacotamento profissional
-- `ruff` para lint e formatacao
-- `pytest` para testes
-- `streamlit` para dashboard exploratorio
+- `pandas` and `numpy` for data handling
+- `yfinance` for public market data ingestion
+- `pytest` for automated tests
+- `ruff` for formatting and linting
+- `plotly` for modular charts
+- `streamlit` for the interactive dashboard
 
-## Estrutura Do Projeto
+## How To Run
+
+Install dependencies:
+
+```bash
+make install
+```
+
+Run formatting, lint and tests:
+
+```bash
+make format
+make lint
+make test
+```
+
+Run the full pipeline:
+
+```bash
+make run-pipeline
+```
+
+Run the pipeline explicitly in offline mode:
+
+```bash
+python scripts/run_pipeline.py --offline
+```
+
+## How To Run The Dashboard
+
+Start the Streamlit app:
+
+```bash
+make app
+```
+
+The dashboard starts in offline-friendly mode by default and can still run without internet using:
+
+- `data/raw/example_prices.csv` when valid for the current thresholds;
+- deterministic synthetic data when the example file is insufficient.
+
+## Methodology In Brief
+
+Aurora follows a deliberately simple and defensible methodology:
+
+1. load price data from cache, public source or manual CSV;
+2. compute quantitative features;
+3. shift decision features by one period to prevent look-ahead bias;
+4. classify the market into one of four regimes with fixed rules;
+5. assign long-only portfolio weights defined a priori;
+6. rebalance monthly in the backtest engine;
+7. compare the strategy with coherent benchmarks;
+8. summarize performance in tables, charts and technical documentation.
+
+Key methodological controls:
+
+- no regime threshold is optimized on final performance;
+- allocation weights are defined before reviewing the backtest outcome;
+- portfolio weights decided at time `t` are only applied from the next return observation onward;
+- GenAI is used for synthesis and documentation support, not for trading decisions.
+
+## Results
+
+Current public repository status:
+
+- the pipeline, dashboard, benchmarks and reporting layers are fully wired and tested;
+- final real-market presentation metrics should be filled from the latest validated pipeline output in `reports/tables/performance_summary.csv`;
+- a technical report template is available at `reports/final/relatorio_tecnico.md`.
+
+Reproducible offline demo snapshot based on synthetic data:
+
+- annualized return: `5.48%`
+- annualized volatility: `3.87%`
+- max drawdown: `-5.48%`
+- number of rebalances: `119`
+
+Important note:
+
+- the snapshot above is a deterministic offline demonstration only;
+- it must not be interpreted as live, investable or market-validated performance.
+
+## Limitations
+
+Current limitations include:
+
+- rule-based regime logic is intentionally simple in this version;
+- no slippage, taxes or market impact model is included yet;
+- the asset universe is still compact and research-oriented;
+- public data sources may require manual fallback or validation;
+- robustness still needs broader out-of-sample and operational testing.
+
+## Folder Structure
 
 ```text
 aurora-regime-ai/
+|-- .github/
+|   `-- workflows/
+|       `-- ci.yml
 |-- app/
 |   `-- streamlit_app.py
 |-- data/
@@ -33,6 +149,7 @@ aurora-regime-ai/
 |   `-- cache/
 |-- docs/
 |   |-- dados.md
+|   |-- defesa_tecnica.md
 |   |-- metodologia.md
 |   |-- prompts_genai.md
 |   `-- vieses_e_limitacoes.md
@@ -43,6 +160,8 @@ aurora-regime-ai/
 |   |-- figures/
 |   |-- final/
 |   `-- tables/
+|-- scripts/
+|   `-- run_pipeline.py
 |-- src/
 |   `-- aurora/
 |       |-- analysis/
@@ -54,64 +173,20 @@ aurora-regime-ai/
 |       |-- regime/
 |       |-- visualization/
 |       |-- __init__.py
-|       `-- config.py
+|       |-- config.py
+|       `-- pipeline.py
 |-- tests/
 |   |-- conftest.py
+|   |-- test_genai.py
+|   |-- test_pipeline.py
 |   `-- test_smoke.py
 |-- .env.example
 |-- .gitignore
 |-- Makefile
-`-- pyproject.toml
+|-- pyproject.toml
+`-- README.md
 ```
 
-## Comandos Principais
+## Disclaimer
 
-```bash
-make install
-make format
-make lint
-make test
-make run-smoke
-make app
-```
-
-## Visualizacoes
-
-As funcoes em `src/aurora/visualization/charts.py` retornam objetos Plotly independentes de Streamlit, permitindo uso em notebooks, relatorios e scripts.
-
-Exemplo:
-
-```python
-from aurora.visualization import plot_equity_curves, save_figure
-
-figure = plot_equity_curves(strategy_equity_curve, benchmark_equity_curves)
-save_figure(figure, "reports/figures/equity_curve.html")
-```
-
-Outro exemplo:
-
-```python
-from aurora.visualization import plot_performance_table
-
-metrics_figure = plot_performance_table(performance_summary)
-```
-
-## Dados
-
-As pastas em `data/` existem apenas como estrutura de trabalho. Dados reais, bases intermediarias, caches e artefatos sensiveis nao devem ser versionados. Os diretorios mantem apenas arquivos `.gitkeep` para preservar a arvore no Git.
-
-## Configuracao Central
-
-O arquivo `src/aurora/config.py` e a fonte principal dos parametros metodologicos e operacionais do projeto. Ativos iniciais, janelas de features, limites de regime, frequencias, capital inicial e caminhos relativos ficam centralizados ali para evitar numeros magicos espalhados pelo codigo.
-
-## Roadmap Inicial
-
-- organizar ingestao e padronizacao de dados;
-- estruturar geracao de features por regime;
-- definir interface para classificacao de regimes;
-- conectar motor de portfolio, backtest e analise;
-- evoluir o dashboard para acompanhamento de resultados.
-
-## Aviso Importante
-
-Este repositorio tem finalidade educacional, de pesquisa e desenvolvimento. Nada aqui constitui recomendacao de investimento, oferta, garantia de retorno ou aconselhamento financeiro.
+This repository is for education, research and portfolio demonstration purposes only. Nothing here constitutes investment advice, an offer, a promise of return or a recommendation to buy or sell any asset. Historical, simulated or synthetic results do not guarantee future performance.

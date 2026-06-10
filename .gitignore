@@ -15,11 +15,13 @@ env/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+.cache/
 .coverage
 htmlcov/
 
 # Environment files
 .env
+.env.*
 
 # Jupyter
 .ipynb_checkpoints/
@@ -29,6 +31,12 @@ htmlcov/
 Thumbs.db
 .vscode/
 .idea/
+*.swp
+*.swo
+*.tmp
+*.temp
+*.bak
+*.log
 
 # Build artifacts
 build/
@@ -42,6 +50,7 @@ reports/tables/*
 !reports/tables/.gitkeep
 reports/final/*
 !reports/final/.gitkeep
+!reports/final/*.md
 
 # Keep data directories, but never commit real datasets
 data/raw/*
@@ -51,3 +60,6 @@ data/processed/*
 !data/processed/.gitkeep
 data/cache/*
 !data/cache/.gitkeep
+
+# Local app artifacts
+.streamlit/

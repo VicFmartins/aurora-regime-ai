@@ -1,24 +1,27 @@
 PYTHON ?= python
 
-.PHONY: install format lint test run-smoke app
+.PHONY: install format lint test run-smoke run-pipeline app
 
 install:
 	$(PYTHON) -m pip install --upgrade pip
 	$(PYTHON) -m pip install -e ".[dev]"
 
 format:
-	ruff format .
-	ruff check . --fix
+	$(PYTHON) -m ruff format .
+	$(PYTHON) -m ruff check . --fix
 
 lint:
-	ruff format . --check
-	ruff check .
+	$(PYTHON) -m ruff format . --check
+	$(PYTHON) -m ruff check .
 
 test:
-	pytest
+	$(PYTHON) -m pytest
 
 run-smoke:
-	pytest tests/test_smoke.py -q
+	$(PYTHON) -m pytest tests/test_smoke.py -q
+
+run-pipeline:
+	$(PYTHON) scripts/run_pipeline.py
 
 app:
-	streamlit run app/streamlit_app.py
+	$(PYTHON) -m streamlit run app/streamlit_app.py

@@ -61,7 +61,13 @@ def load_prices_from_csv(
 
     try:
         raw_data = pd.read_csv(csv_path)
-    except Exception as exc:
+    except (
+        FileNotFoundError,
+        OSError,
+        UnicodeDecodeError,
+        pd.errors.EmptyDataError,
+        pd.errors.ParserError,
+    ) as exc:
         raise RuntimeError(
             f"Nao foi possivel ler o arquivo CSV em '{csv_path.as_posix()}'."
         ) from exc
