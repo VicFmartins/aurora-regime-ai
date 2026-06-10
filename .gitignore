@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.python-version
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Tooling
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.cache/
+.coverage
+htmlcov/
+
+# Environment files
+.env
+.env.*
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+*.temp
+*.bak
+*.log
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Runtime and local artifacts
+reports/figures/*
+!reports/figures/.gitkeep
+reports/tables/*
+!reports/tables/.gitkeep
+reports/final/*
+!reports/final/.gitkeep
+!reports/final/*.md
+
+# Keep data directories, but never commit real datasets
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/example_prices.csv
+data/processed/*
+!data/processed/.gitkeep
+data/cache/*
+!data/cache/.gitkeep
+
+# Local app artifacts
+.streamlit/

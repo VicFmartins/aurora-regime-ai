@@ -1,0 +1,111 @@
+# Metodologia
+
+Este documento vai consolidar a metodologia do Aurora Regime AI, incluindo:
+
+- definicao operacional dos regimes de mercado;
+- regras de calculo de indicadores e features;
+- processos de rotulagem, calibracao e validacao;
+- criterios de alocacao e controle de risco;
+- protocolo de backtest e comparacao com benchmarks.
+
+Fonte principal de parametros:
+
+- `src/aurora/config.py` centraliza o universo inicial de ativos, as janelas de calculo, os thresholds de regime, a frequencia padrao e os caminhos relativos usados pelo projeto.
+
+## Features Quantitativas
+
+As features do Aurora transformam a serie de precos em sinais interpretaveis para classificacao de regime. O pipeline preserva `NaN` no inicio das janelas e aplica `shift(1)` apenas ao final da montagem do conjunto de decisao, evitando look-ahead bias no backtest.
+
+### Momentum
+
+Momentum mede o retorno acumulado em janelas como 63, 126 e 252 periodos. Ele ajuda a diferenciar contextos de tendencia positiva, perda de forca ou recuperacao apos quedas.
+
+### Volatilidade
+
+Volatilidade e calculada sobre retornos em janela movel e pode ser anualizada. Ela ajuda a identificar transicoes para ambientes de estresse, incerteza elevada e mudancas bruscas de comportamento.
+
+### Drawdown
+
+Drawdown mede a distancia do preco atual para o pico recente da janela. Esse indicador ajuda a detectar deterioracao persistente, estresse e fragilidade estrutural mesmo quando a volatilidade isolada nao captura toda a perda acumulada.
+
+### Z-Score
+
+O z-score padroniza retornos em relacao a sua media e dispersao recentes. Isso ajuda a encontrar desvios anormais, excessos de movimento e sinais de compressao ou esticamento que podem marcar mudanca de regime.
+
+### Correlacao
+
+Correlacoes moveis entre ativos mostram quando diferentes blocos de mercado passam a andar mais juntos ou se desacoplam. Em regimes de estresse, correlacoes tendem a subir, reduzindo diversificacao efetiva.
+
+## Uso Metodologico
+
+- momentum ajuda a separar tendencia e recuperacao;
+- volatilidade ajuda a detectar estresse e instabilidade;
+- drawdown ajuda a capturar perdas acumuladas;
+- z-score ajuda a medir anomalias de curto e medio prazo;
+- correlacao ajuda a avaliar contagio e quebra de diversificacao.
+
+## Arvore De Decisao Dos Regimes
+
+O classificador inicial do Aurora e propositalmente baseado em regras simples, explicaveis e parametrizadas em `config.py`. Os thresholds nao sao ajustados olhando o desempenho final do backtest; eles sao definidos ex ante para manter interpretabilidade metodologica.
+
+Ordem de decisao:
+
+1. `ESTRESSE`
+   Se `drawdown` estiver abaixo do limite de estresse ou se a volatilidade anualizada estiver acima do teto configurado.
+2. `TENDENCIA_POSITIVA`
+   Se `momentum_126 > 0`, `momentum_252 > 0` e a volatilidade permanecer controlada.
+3. `RECUPERACAO`
+   Se o `drawdown` ainda for negativo, mas `momentum_63 > 0` e o `z-score` estiver melhorando.
+4. `LATERALIZACAO`
+   Caso residual, quando nenhum dos gatilhos anteriores estiver ativo.
+
+Os sinais usados na classificacao sao armazenados junto com o regime e a explicacao textual, o que facilita auditoria e revisao do racional de cada decisao.
+
+## Politica De Alocacao Por Regime
+
+As alocacoes do Aurora sao definidas a priori, antes de qualquer backtest, para mitigar overfitting e manter justificativa economica clara.
+
+Diretriz inicial:
+
+- `TENDENCIA_POSITIVA`: maior peso em `BOVA11.SA` e `IVVB11.SA`, mantendo pequena camada defensiva.
+- `ESTRESSE`: maior peso em `CDI`, `IMAB11.SA` e `USDBRL=X`, reduzindo risco direcional.
+- `LATERALIZACAO`: pesos equilibrados entre os blocos de risco e defesa.
+- `RECUPERACAO`: reentrada gradual em risco, sem abandonar protecao.
+
+Todas as politicas sao long-only e validadas para:
+
+- nenhum peso negativo;
+- soma de pesos igual a 100%;
+- cobertura completa do universo inicial de ativos.
+
+## Benchmarks De Comparacao
+
+O Aurora compara a estrategia com referencias simples, reproduziveis e economicamente interpretaveis na mesma janela temporal do backtest.
+
+- `Buy and hold` de `BOVA11.SA`: referencia direta de exposicao ao principal ativo de risco local.
+- `CDI`/caixa defensivo: referencia conservadora para avaliar se a estrategia compensa o risco assumido.
+- carteira estatica `60/40` diversificada: referencia intermediaria entre risco e defesa, sem adaptacao por regime.
+- `Equal weight`: referencia neutra de diversificacao simples entre os ativos disponiveis.
+
+Esses benchmarks foram escolhidos porque cobrem quatro perguntas complementares:
+
+- a estrategia supera o risco direcional puro?
+- supera a opcao defensiva de ficar em caixa?
+- agrega valor contra uma alocacao estatica razoavel?
+- agrega valor contra uma diversificacao ingenua e transparente?
+
+## Metricas De Performance
+
+O modulo de analise resume estrategia e benchmarks com metricas padronizadas, sempre na mesma janela temporal usada no backtest.
+
+- retorno acumulado: crescimento total no periodo.
+- retorno anualizado: taxa geometrica equivalente anual.
+- volatilidade anualizada: dispersao dos retornos escalada para base anual.
+- Sharpe ratio: retorno excedente por unidade de risco, com taxa livre de risco opcional.
+- maximo drawdown: pior perda relativa a partir do pico anterior.
+- Calmar ratio: retorno anualizado dividido pelo drawdown maximo absoluto.
+- hit rate: proporcao de periodos com retorno positivo.
+- melhor mes: maior retorno mensal observado.
+- pior mes: menor retorno mensal observado.
+- numero de rebalanceamentos: quantidade de trocas de carteira registradas.
+- turnover medio: media do giro de carteira quando o log de rebalanceamento estiver disponivel.
