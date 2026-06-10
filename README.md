@@ -10,6 +10,15 @@ Aurora Regime AI was built to recognize market context, not to predict the futur
 
 The central research hypothesis is that a regime-aware allocation process can improve risk-adjusted outcomes relative to static allocations, while remaining explainable and auditable.
 
+Operationally, this hypothesis is tested by comparing the strategy against coherent benchmarks such as:
+
+- `buy and hold` in `BOVA11.SA`
+- `CDI` or defensive cash proxy
+- static diversified `60/40`
+- `equal weight`
+
+The evaluation lens is not raw return alone. The project checks whether the regime-aware process can improve the balance between return, volatility, drawdown and portfolio turnover.
+
 Instead of assuming a single market dynamic, Aurora evaluates whether the market is closer to:
 
 - `TENDENCIA_POSITIVA`
@@ -59,6 +68,14 @@ make lint
 make test
 ```
 
+If `make` is not available in your environment, the same checks can be run with:
+
+```bash
+python -m ruff format .
+python -m ruff check .
+python -m pytest
+```
+
 Run the full pipeline:
 
 ```bash
@@ -104,7 +121,14 @@ Key methodological controls:
 - portfolio weights decided at time `t` are only applied from the next return observation onward;
 - GenAI is used for synthesis and documentation support, not for trading decisions.
 
-## Results
+Audit artifacts exported by the pipeline include:
+
+- `reports/tables/performance_summary.csv`
+- `reports/tables/rebalance_log.csv`
+- `reports/tables/target_weights.csv`
+- `reports/tables/classified_regimes.csv`
+
+## Validated Status And Demo Snapshot
 
 Current public repository status:
 
@@ -112,7 +136,7 @@ Current public repository status:
 - final real-market presentation metrics should be filled from the latest validated pipeline output in `reports/tables/performance_summary.csv`;
 - a technical report template is available at `reports/final/relatorio_tecnico.md`.
 
-Reproducible offline demo snapshot based on synthetic data:
+Reproducible offline validation snapshot based on synthetic data:
 
 - annualized return: `5.48%`
 - annualized volatility: `3.87%`
@@ -122,6 +146,7 @@ Reproducible offline demo snapshot based on synthetic data:
 Important note:
 
 - the snapshot above is a deterministic offline demonstration only;
+- it is included to prove reproducibility of the pipeline, not to claim economic edge;
 - it must not be interpreted as live, investable or market-validated performance.
 
 ## Limitations
