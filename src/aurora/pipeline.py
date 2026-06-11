@@ -242,9 +242,8 @@ def _load_offline_prices(
                 prices=synthetic_prices,
                 source="synthetic",
                 notes=(
-                    f"{reason} O arquivo de exemplo '{example_path.as_posix()}' existe, "
-                    "mas nao atende aos thresholds atuais da configuracao; a pipeline "
-                    "gerou dados sinteticos deterministas para prosseguir."
+                    "Modo demonstracao ativo: o dashboard esta usando dados ficticios "
+                    "deterministicos para permitir execucao offline e reproducao dos resultados."
                 ),
             )
 
@@ -252,7 +251,8 @@ def _load_offline_prices(
             prices=example_prices,
             source="example_csv",
             notes=(
-                f"{reason} Precos carregados do arquivo demonstrativo '{example_path.as_posix()}'."
+                "Modo demonstracao ativo: dados ficticios de exemplo carregados com "
+                "sucesso para execucao offline."
             ),
         )
 
@@ -261,8 +261,8 @@ def _load_offline_prices(
         prices=synthetic_prices,
         source="synthetic",
         notes=(
-            f"{reason} Nenhum CSV offline valido foi encontrado; a pipeline gerou dados "
-            "sinteticos deterministas para manter o fluxo reprodutivel."
+            "Modo demonstracao ativo: o dashboard esta usando dados ficticios "
+            "deterministicos para permitir execucao offline e reproducao dos resultados."
         ),
     )
 

@@ -37,6 +37,20 @@ def test_run_offline_pipeline_uses_synthetic_fallback(tmp_path: Path) -> None:
     assert result.saved_figures["weights"].exists()
 
 
+def test_run_offline_pipeline_uses_example_csv_when_valid(tmp_path: Path) -> None:
+    config = _build_test_config(tmp_path)
+    example_path = Path("data/raw/example_prices.csv")
+    target_path = config.raw_data_dir / "example_prices.csv"
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    target_path.write_text(example_path.read_text(encoding="utf-8"), encoding="utf-8")
+
+    result = run_offline_pipeline(config)
+
+    assert result.data_source == "example_csv"
+    assert "dados ficticios de exemplo" in (result.metadata["data_notes"] or "")
+    assert result.saved_tables["performance_summary"].exists()
+
+
 def _build_test_config(tmp_path: Path) -> ProjectConfig:
     return ProjectConfig(
         start_date="2020-01-01",

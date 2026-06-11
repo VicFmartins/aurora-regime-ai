@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from aurora.config import ProjectConfig
+from aurora.config import ProjectConfig, load_config
 from aurora.data.loader import load_prices_from_csv
 
 
@@ -80,3 +80,15 @@ def test_load_prices_from_csv_rejects_invalid_format(tmp_path: Path) -> None:
     config = ProjectConfig(min_observations_per_asset=1, max_null_ratio_per_asset=1.0)
     with pytest.raises(ValueError, match="CSV manual invalido"):
         load_prices_from_csv(path=csv_path, config=config)
+
+
+def test_repository_example_prices_csv_passes_default_validation() -> None:
+    config = load_config()
+    csv_path = Path("data/raw/example_prices.csv")
+
+    price_data = load_prices_from_csv(path=csv_path, config=config)
+
+    assert isinstance(price_data.index, pd.DatetimeIndex)
+    assert price_data.index.is_monotonic_increasing
+    assert len(price_data) >= config.min_observations_per_asset
+    assert list(price_data.columns) == list(config.assets)

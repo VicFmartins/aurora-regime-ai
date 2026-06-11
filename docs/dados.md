@@ -53,6 +53,6 @@ Em ambos os casos, o loader converte o arquivo para um `DataFrame` wide com `Dat
 
 ## Exemplo Ficticio
 
-O arquivo `data/raw/example_prices.csv` existe apenas como exemplo artificial de preenchimento. Os valores sao ficticios, pequenos e exclusivamente demonstrativos. Eles nao representam precos reais de mercado e nao devem ser usados para analise, pesquisa ou decisao de investimento.
+O arquivo `data/raw/example_prices.csv` e uma serie deterministica e ficticia criada apenas para demonstracao offline do dashboard e da pipeline. Os valores nao representam precos reais de mercado e nao devem ser usados para analise, pesquisa ou decisao de investimento.
 
 Essa rota manual permite substituir parcial ou totalmente o download via `yfinance` no futuro, sem alterar a interface principal da camada de dados.
