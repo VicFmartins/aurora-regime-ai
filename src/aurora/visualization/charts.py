@@ -9,11 +9,16 @@ import plotly.graph_objects as go
 from plotly.colors import qualitative
 
 REGIME_COLORS = {
-    "TENDENCIA_POSITIVA": "#0b8f55",
-    "ESTRESSE": "#c0392b",
-    "LATERALIZACAO": "#7f8c8d",
-    "RECUPERACAO": "#f39c12",
+    "TENDENCIA_POSITIVA": "#34d399",
+    "ESTRESSE": "#fb7185",
+    "LATERALIZACAO": "#fbbf24",
+    "RECUPERACAO": "#a78bfa",
 }
+CHART_COLORS = ["#5eead4", "#60a5fa", "#f59e0b", "#c084fc", "#fb7185", "#94a3b8"]
+GRID_COLOR = "rgba(148, 163, 184, 0.18)"
+PLOT_BG = "rgba(9, 19, 35, 0.78)"
+PAPER_BG = "rgba(0, 0, 0, 0)"
+FONT_COLOR = "#e5eef9"
 
 
 def plot_equity_curves(
@@ -30,25 +35,26 @@ def plot_equity_curves(
             y=strategy_equity_curve,
             mode="lines",
             name=strategy_equity_curve.name or "strategy",
-            line={"width": 3},
+            line={"width": 3.5, "color": CHART_COLORS[0]},
         )
     )
 
-    for column in benchmark_frame.columns:
+    for index, column in enumerate(benchmark_frame.columns, start=1):
         figure.add_trace(
             go.Scatter(
                 x=benchmark_frame.index,
                 y=benchmark_frame[column],
                 mode="lines",
                 name=str(column),
+                line={"width": 2.2, "color": CHART_COLORS[index % len(CHART_COLORS)]},
             )
         )
 
-    figure.update_layout(
+    _apply_dark_layout(
+        figure,
         title="Equity Curve: Estrategia vs Benchmarks",
         xaxis_title="Data",
         yaxis_title="Patrimonio",
-        template="plotly_white",
         legend_title="Serie",
     )
     return figure
@@ -62,7 +68,7 @@ def plot_drawdown(
     drawdown_frame = returns_frame.apply(_compute_drawdown_series)
 
     figure = go.Figure()
-    for column in drawdown_frame.columns:
+    for index, column in enumerate(drawdown_frame.columns):
         figure.add_trace(
             go.Scatter(
                 x=drawdown_frame.index,
@@ -70,16 +76,19 @@ def plot_drawdown(
                 mode="lines",
                 name=str(column),
                 fill="tozeroy",
+                line={"width": 2.0, "color": CHART_COLORS[index % len(CHART_COLORS)]},
+                fillcolor=_hex_to_rgba(CHART_COLORS[index % len(CHART_COLORS)], 0.18),
             )
         )
 
-    figure.update_layout(
+    _apply_dark_layout(
+        figure,
         title="Drawdown Ao Longo Do Tempo",
         xaxis_title="Data",
         yaxis_title="Drawdown",
-        template="plotly_white",
         legend_title="Serie",
     )
+    figure.update_yaxes(tickformat=".0%")
     return figure
 
 
@@ -104,11 +113,11 @@ def plot_regimes(
             )
         )
 
-    figure.update_layout(
+    _apply_dark_layout(
+        figure,
         title="Regimes Classificados No Tempo",
         xaxis_title="Data",
         yaxis_title="Regime",
-        template="plotly_white",
         legend_title="Regime",
     )
     return figure
@@ -119,7 +128,7 @@ def plot_weights(
 ) -> go.Figure:
     """Plot portfolio weights over time as a stacked area chart."""
     figure = go.Figure()
-    palette = qualitative.Set2
+    palette = CHART_COLORS + list(qualitative.Set2)
 
     for index, column in enumerate(weights_history.columns):
         figure.add_trace(
@@ -129,17 +138,19 @@ def plot_weights(
                 mode="lines",
                 name=str(column),
                 stackgroup="weights",
-                line={"width": 1.5, "color": palette[index % len(palette)]},
+                line={"width": 1.6, "color": palette[index % len(palette)]},
+                fillcolor=_hex_to_rgba(palette[index % len(palette)], 0.42),
             )
         )
 
-    figure.update_layout(
+    _apply_dark_layout(
+        figure,
         title="Pesos Da Carteira Ao Longo Do Tempo",
         xaxis_title="Data",
         yaxis_title="Peso",
-        template="plotly_white",
         legend_title="Ativo",
     )
+    figure.update_yaxes(tickformat=".0%")
     return figure
 
 
@@ -155,24 +166,26 @@ def plot_period_returns(
     compounded.index = compounded.index.to_timestamp()
 
     figure = go.Figure()
-    for column in compounded.columns:
+    for index, column in enumerate(compounded.columns):
         figure.add_trace(
             go.Bar(
                 x=compounded.index,
                 y=compounded[column],
                 name=str(column),
+                marker={"color": CHART_COLORS[index % len(CHART_COLORS)]},
             )
         )
 
     period_label = "Mensais" if frequency.upper().startswith("M") else "Por Periodo"
-    figure.update_layout(
+    _apply_dark_layout(
+        figure,
         title=f"Retornos {period_label}",
         xaxis_title="Data",
         yaxis_title="Retorno",
-        template="plotly_white",
-        barmode="group",
         legend_title="Serie",
+        barmode="group",
     )
+    figure.update_yaxes(tickformat=".0%")
     return figure
 
 
@@ -193,19 +206,31 @@ def plot_performance_table(
             go.Table(
                 header={
                     "values": ["serie", *formatted_summary.columns.tolist()],
-                    "fill_color": "#1f2937",
-                    "font": {"color": "white", "size": 12},
+                    "fill_color": "rgba(17, 24, 39, 0.96)",
+                    "font": {"color": FONT_COLOR, "size": 12},
                     "align": "left",
+                    "line_color": "rgba(125, 211, 252, 0.12)",
                 },
                 cells={
                     "values": table_values,
-                    "fill_color": "#f8fafc",
+                    "fill_color": [
+                        ["rgba(9, 19, 35, 0.96)"] * len(formatted_summary.index),
+                        *[["rgba(13, 28, 51, 0.90)"] * len(formatted_summary.index)]
+                        * len(formatted_summary.columns),
+                    ],
                     "align": "left",
+                    "font": {"color": FONT_COLOR, "size": 11},
+                    "line_color": "rgba(125, 211, 252, 0.08)",
                 },
             )
         ]
     )
-    figure.update_layout(title="Resumo De Metricas")
+    figure.update_layout(
+        title="Resumo De Metricas",
+        paper_bgcolor=PAPER_BG,
+        margin={"l": 10, "r": 10, "t": 50, "b": 10},
+        font={"color": FONT_COLOR},
+    )
     return figure
 
 
@@ -263,3 +288,59 @@ def _compute_drawdown_series(returns: pd.Series) -> pd.Series:
     equity_curve = (1.0 + clean_returns).cumprod()
     running_peak = equity_curve.cummax()
     return equity_curve.div(running_peak).sub(1.0)
+
+
+def _apply_dark_layout(
+    figure: go.Figure,
+    *,
+    title: str,
+    xaxis_title: str,
+    yaxis_title: str,
+    legend_title: str,
+    barmode: str | None = None,
+) -> None:
+    layout_updates = {
+        "title": {"text": title, "font": {"size": 20}},
+        "xaxis_title": xaxis_title,
+        "yaxis_title": yaxis_title,
+        "legend_title": legend_title,
+        "template": "plotly_dark",
+        "paper_bgcolor": PAPER_BG,
+        "plot_bgcolor": PLOT_BG,
+        "font": {"color": FONT_COLOR},
+        "hoverlabel": {
+            "bgcolor": "rgba(9, 19, 35, 0.96)",
+            "bordercolor": "rgba(125, 211, 252, 0.18)",
+            "font": {"color": FONT_COLOR},
+        },
+        "legend": {
+            "orientation": "h",
+            "yanchor": "top",
+            "y": -0.18,
+            "x": 0,
+            "bgcolor": "rgba(0, 0, 0, 0)",
+        },
+        "margin": {"l": 24, "r": 24, "t": 64, "b": 42},
+    }
+    if barmode:
+        layout_updates["barmode"] = barmode
+
+    figure.update_layout(**layout_updates)
+    figure.update_xaxes(
+        gridcolor=GRID_COLOR,
+        zerolinecolor=GRID_COLOR,
+        linecolor="rgba(125, 211, 252, 0.14)",
+    )
+    figure.update_yaxes(
+        gridcolor=GRID_COLOR,
+        zerolinecolor=GRID_COLOR,
+        linecolor="rgba(125, 211, 252, 0.14)",
+    )
+
+
+def _hex_to_rgba(color: str, alpha: float) -> str:
+    color = color.lstrip("#")
+    red = int(color[0:2], 16)
+    green = int(color[2:4], 16)
+    blue = int(color[4:6], 16)
+    return f"rgba({red}, {green}, {blue}, {alpha})"
